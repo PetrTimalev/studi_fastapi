@@ -1,18 +1,21 @@
-from fastapi import FastAPI, Path
+from typing import Annotated
+from fastapi import FastAPI, Path, Query
 
 app = FastAPI()
 
-# Добавив проверку на минимальную и максимальную длину имени -username.
-# Также мы добавили описание поля и добавили в поле пример имени, username
 
-# установили границы числа для поля age от 0 до 100 и добавили описание поля, age
-@app.get("/user/{username}/{age}")
-async def login(username: str = Path(min_length=3, max_length=15, description='Enter your username', example='Ilya'),
-                age: int = Path(ge=0, le=100, description="Enter your age")) -> dict:
-    return {"user": username, "age": age}
+# @app.get("/user/{username}")
+# async def login(
+#         username: Annotated[str, Path(min_length=3, max_length=15, description='Enter your username', example='permin0ff')],
+#         first_name: Annotated[str | None, Query(max_length=10)] = ...) -> dict:
+#     return {"user": username, "Name": first_name}
 
 
-
+# http://127.0.0.1:8000/user?people=tom&people=Sam&people=Bob
+# {"user":"Timalev","Name":"Petr"}
+@app.get("/user")
+async def search(people: Annotated[list[str], Query()]) -> dict:
+    return {"user": people}
 
 
 if __name__ == "__main__":
