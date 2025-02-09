@@ -5,6 +5,8 @@ app = FastAPI()
 
 #  включим параметр pattern в функцию Query(), чтобы ограничить значение first_name либо начинаться
 #  с J, либо заканчиваться на s (как например John, Tomas).
+
+
 @app.get("/user/{username}")
 async def login(
         username: Annotated[
