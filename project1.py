@@ -7,8 +7,14 @@ messages_db = []
 
 
 class Message(BaseModel):
-    id: int
+    id: int | None = None
     text: str
+
+    model_config = {
+        "json_schema_extra": {
+            "examples": [{"text": "Simple message", }]
+        }
+    }
 
 
 @app.get("/")
@@ -32,18 +38,20 @@ async def create_message(message: Message) -> str:
 
 
 @app.put("/message/{message_id}")
-def update_message(message_id: str, message: str = Body()) -> str:
-    messages_db[message_id] = message
-    return f"Message updated!"
+async def update_message(message_id: int, message: str = Body()) -> str:
+    edit_message = messages_db[message_id]
+    edit_message.text = message
+    return "Message updated!"
 
 
 @app.delete("/message/{message_id}")
-def delete_message(message_id: str) -> str:
+async def delete_message(message_id: int) -> str:
     messages_db.pop(message_id)
     return f"Message ID={message_id} deleted!"
 
 
 @app.delete("/")
-def kill_message_all() -> str:
+async def kill_message_all() -> str:
     messages_db.clear()
     return "All messages deleted!"
+
